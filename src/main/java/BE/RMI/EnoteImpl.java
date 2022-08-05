@@ -1,5 +1,9 @@
 package BE.RMI;
 
+import BE.Model.Account;
+import BE.Service.AccountService;
+
+import javax.swing.*;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -15,5 +19,20 @@ public class EnoteImpl extends UnicastRemoteObject implements IEnote {
 
   protected EnoteImpl(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
     super(port, csf, ssf);
+  }
+
+
+  @Override
+  public int logIn(String username, String pwd) throws RemoteException {
+    Account account = AccountService.getByUsername(username);
+    System.out.println(account.toString());
+    if (account.getUsername() == null) {
+      return 1;
+    } else {
+      if (!pwd.equals(account.getPassword())) {
+        return 2;
+      }
+    }
+    return 0;
   }
 }

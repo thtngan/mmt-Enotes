@@ -1,6 +1,7 @@
 package FE.Panel;
 
 import BE.Shared.CommonBus;
+import FE.Frame.LogIn;
 import FE.MainFrame;
 import FE.Shared.CommonLabel;
 import FE.Shared.CommonPanel;
@@ -120,6 +121,7 @@ public class ClientPanel extends JPanel {
             try {
 //              new RemoteFrame(this, this.common_bus, "png");
 //              new MainMenu(this, this.common_bus);
+                new LogIn(this, this.common_bus);
             }
             catch(Exception exception) {
               JOptionPane.showMessageDialog(this, "Can't start remoting to server:\n" + exception.getMessage());
