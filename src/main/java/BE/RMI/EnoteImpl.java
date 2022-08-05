@@ -2,6 +2,7 @@ package BE.RMI;
 
 import BE.Model.Account;
 import BE.Service.AccountService;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.swing.*;
 import java.rmi.RemoteException;
@@ -29,10 +30,16 @@ public class EnoteImpl extends UnicastRemoteObject implements IEnote {
     if (account.getUsername() == null) {
       return 1;
     } else {
-      if (!pwd.equals(account.getPassword())) {
+      if (!BCrypt.checkpw(pwd, account.getPassword())) {
         return 2;
       }
     }
     return 0;
+  }
+
+  @Override
+  public boolean signUp(String username, String pwd) throws RemoteException {
+    Account account = new Account(username, pwd);
+    return AccountService.addOne(account);
   }
 }

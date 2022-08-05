@@ -6,14 +6,35 @@ LOG ON
 USE eNote
 GO
 
---DROP TABLE ACCOUNT
+/*
+DROP TABLE NOTE
+DROP TABLE ACCOUNT
+*/
+
 CREATE TABLE ACCOUNT (
-                         Username varchar(12) NOT NULL PRIMARY KEY,
-                         Password varchar(100) NOT NULL,
+                         Username VARCHAR(100),
+                         Password VARCHAR(100)
+                         CONSTRAINT PK_Username PRIMARY KEY CLUSTERED (Username)
 )
 
-DELETE FROM ACCOUNT
+ON [PRIMARY]
+GO
 
-    insert into ACCOUNT values('username','1234')
+CREATE TABLE NOTE (
+                      ID INT,
+                      Name VARCHAR(50),
+                      Type VARCHAR(50),
+                      Content VARCHAR(50),
+                      Username_ID VARCHAR(100),
+                      CONSTRAINT PK_ID PRIMARY KEY CLUSTERED (ID)
+)
+
+ALTER TABLE NOTE WITH NOCHECK
+	ADD FOREIGN KEY (Username_ID) REFERENCES ACCOUNT(Username)
+GO
+
+INSERT INTO ACCOUNT values('username','1234')
+INSERT INTO NOTE VALUES(1, 'hello', 'txt', '0x9473FBCCBC01AF', 'username')
 
 SELECT * FROM ACCOUNT
+SELECT * FROM NOTE

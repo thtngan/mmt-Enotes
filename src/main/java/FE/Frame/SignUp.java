@@ -10,17 +10,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 
-public class LogIn extends JFrame implements Runnable {
+public class SignUp extends JFrame implements Runnable {
   public final static int WIDTH_DIALOG = 380;
   public final static int HEIGHT_DIALOG = 300;
 
-  private ClientPanel client_panel;
   private CommonBus common_bus;
   private IEnote enote_obj;
 
-  private SignUp signUp;
-
-  public LogIn(ClientPanel client_panel, CommonBus common_bus) {
+  public SignUp(ClientPanel client_panel, CommonBus common_bus) {
     this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     this.setTitle("E-NOTE APPLICATION");
     this.setResizable(false);
@@ -31,7 +28,6 @@ public class LogIn extends JFrame implements Runnable {
 
     this.common_bus = common_bus;
     this.enote_obj = this.common_bus.getRMIClient().getRemoteObject();
-    this.client_panel = client_panel;
 
     //add components
     this.initComponents();
@@ -39,7 +35,7 @@ public class LogIn extends JFrame implements Runnable {
 
   private void initComponents() {
     JLabel label = new JLabel();
-    label.setText("LOGIN");
+    label.setText("SIGN UP");
     label.setFont(new Font("segoe ui", Font.BOLD, 40));
     label.setBounds(135, 20, 510, 50);
     this.add(label);
@@ -64,67 +60,57 @@ public class LogIn extends JFrame implements Runnable {
     txtPassword.setBounds(130, 130, 200, 30);
     this.add(txtPassword);
 
-    // TODO: button login
-    Button btnLogin = new Button("LOGIN");
-    btnLogin.setBounds(115, 180, 162, 30);
-    btnLogin.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mousePressed(MouseEvent e) {
-        String username = txtUsername.getText();
-        String password = txtPassword.getText();
-        loginMousePressed(username, password);
-      }
-    });
-    this.add(btnLogin);
+    // TODO: Re-password
+    JLabel lblPassword1 = new JLabel("Re-password: ");
+    lblPassword1.setBounds(40,180,130,30);
+    lblPassword1.setFont(new Font("SEGOE UI", Font.BOLD, 14));
+    this.add(lblPassword1);
 
-    // TODO: sign up
-    Button btnSignUp = new Button("SIGNUP");
+    JPasswordField txtPassword1 = new JPasswordField("");
+    txtPassword1.setBounds(130, 180, 200, 30);
+    this.add(txtPassword1);
+
+    // TODO: button sign up
+    Button btnSignUp = new Button("SIGN UP");
     btnSignUp.setBounds(115, 220, 162, 30);
     btnSignUp.addMouseListener(new MouseAdapter() {
       @Override
       public void mousePressed(MouseEvent e) {
-        signUpMousePressed();
+        if (!txtPassword.getText().equals(txtPassword1.getText())) {
+          pwdNotMatch();
+        } else {
+          String username = txtUsername.getText();
+          String password = txtPassword.getText();
+          signUpMousePressed(username, password);
+        }
+
       }
     });
     this.add(btnSignUp);
-  }
+ }
 
   @Override
   public void run() {
 
   }
 
-  // TODO: login
-  private void loginMousePressed(String username, String password) {
+  private void pwdNotMatch() {
+    JOptionPane.showMessageDialog(this,"Password are not match","Error",JOptionPane.OK_OPTION);
+  }
+
+  // TODO: sign up
+  private void signUpMousePressed(String username, String password) {
     try {
-      int loginProcess = this.enote_obj.logIn(username, password);
-      System.out.println(loginProcess);
-
-      switch (loginProcess) {
-        case 0:
-          System.out.println("Log in successfull");
-          break;
-        case 1:
-          JOptionPane.showMessageDialog(this,"Username is not exist","Error",JOptionPane.WARNING_MESSAGE);
-          break;
-        case 2:
-          JOptionPane.showMessageDialog(this,"Wrong password","Error",JOptionPane.WARNING_MESSAGE);
-          break;
-        default:
-          //Open menu
-          System.out.println("Log in successfull");
+      boolean signUpProcess = this.enote_obj.signUp(username, password);
+      if (signUpProcess == true) {
+        JOptionPane.showMessageDialog(this,"Created a new account","Success",JOptionPane.YES_OPTION);
+        this.dispose();
+      } else {
+        JOptionPane.showMessageDialog(this,"Created account errored","Success",JOptionPane.OK_CANCEL_OPTION);
       }
-
-
 
     } catch (RemoteException e) {
       e.printStackTrace();
     }
-
-  }
-
-  private void signUpMousePressed() {
-    SignUp signUp = new SignUp(this.client_panel, this.common_bus);
-    signUp.setVisible(true);
   }
 }
