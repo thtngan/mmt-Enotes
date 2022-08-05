@@ -25,11 +25,6 @@ public class ServerPanel extends JPanel implements Runnable{
   private CommonLabel listen_label;
   private CommonLabel stop_label;
 
-  private JLabel connections_label;
-  private JMenuBar menu_bar;
-  private JPopupMenu popup_menu;
-  private int count;
-
   private CommonBus common_bus;
 
   private Thread listen_thread;
@@ -54,9 +49,6 @@ public class ServerPanel extends JPanel implements Runnable{
     this.status_label = new JLabel();
     this.listen_label = new CommonLabel();
     this.stop_label = new CommonLabel();
-    this.menu_bar = new JMenuBar();
-    this.popup_menu = new JPopupMenu();
-    this.connections_label = new JLabel();
 
     // TODO: add main_panel
     this.add(this.main_panel);
@@ -119,44 +111,9 @@ public class ServerPanel extends JPanel implements Runnable{
     });
     this.add(this.stop_label);
 
-    // TODO: style connection label
-    this.count = 0;
-
-    // TODO: style connections_label
-    this.connections_label.setText("<html>All connections <font color='red'>(" + this.count + ")</font></html>");
-    this.connections_label.setBounds(0, 0, 100, 15);
-    this.connections_label.setFont(new Font("segoe ui", Font.PLAIN, 13));
-    this.connections_label.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mousePressed(MouseEvent e) {
-        popupMenuMousePressed(e);
-      }
-
-      @Override
-      public void mouseEntered(MouseEvent e) {
-        popupMenuMouseEntered(e);
-      }
-
-      @Override
-      public void mouseExited(MouseEvent e) {
-        popupMenuMouseExited(e);
-      }
-    });
-
-    // TODO: style menu_bar
-    this.menu_bar.add(this.connections_label);
-    this.menu_bar.setBounds(0, 0, MainFrame.WIDTH_FRAME, 20);
-    this.menu_bar.setLayout(new GridBagLayout());
-    this.add(this.menu_bar);
-
   }
 
-  public void addCount(int n) {
-    this.count += n;
-    this.connections_label.setText("<html>All connections <font color='red'>(" + this.count + ")</font></html>");
-  }
-
-  // TODO: handle events of listen_label
+    // TODO: handle events of listen_label
   private void listenLabelMousePressed(MouseEvent e) {
     if(e.getButton() == MouseEvent.BUTTON1 && this.listen_label.isEnabled()) {
       try {
@@ -217,20 +174,5 @@ public class ServerPanel extends JPanel implements Runnable{
     }
   }
 
-  private void popupMenuMousePressed(MouseEvent e) {
-    if(e.getButton() == MouseEvent.BUTTON1) {
-      this.popup_menu.show(this.connections_label, 130, 5);
-    }
-  }
-
-  private void popupMenuMouseEntered(MouseEvent e) {
-    this.connections_label.setFont(new Font("segoe ui", Font.BOLD, 13));
-    this.setCursor(new Cursor(Cursor.HAND_CURSOR));
-  }
-
-  private void popupMenuMouseExited(MouseEvent e) {
-    this.connections_label.setFont(new Font("segoe ui", Font.PLAIN, 13));
-    this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-  }
 
 }
