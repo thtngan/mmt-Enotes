@@ -143,7 +143,7 @@ public class CreateNote extends JDialog implements Runnable {
     note.setUser_id(this.username);
 
 
-//    NoteService.addNote(note);
+    NoteService.addNote(note);
 
 //    try {
 //      boolean flag = this.enote_obj.addNote(note);
@@ -180,7 +180,7 @@ public class CreateNote extends JDialog implements Runnable {
   }
 
   public static void main(String[] args) {
-    CreateNote note = new CreateNote("user");
+    CreateNote note = new CreateNote("username");
     note.setVisible(true);
   }
 }

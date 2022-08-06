@@ -167,8 +167,8 @@ public class ListNote extends JFrame implements Runnable {
 
 
   private void detailNote(String id) {
-    // TODO: open detail note to update/delete
-    this.detailNote = new DetailNote(this, this.enote_obj, this.username, id);
-    this.detailNote.setVisible(true);
+    // TODO: open detail note to view
+//    this.detailNote = new DetailNote(this, this.enote_obj, this.username, id);
+//    this.detailNote.setVisible(true);
   }
 }
