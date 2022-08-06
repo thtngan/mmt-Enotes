@@ -136,7 +136,21 @@ public class CreateNote extends JDialog implements Runnable {
 
     System.out.println(note.toString());
 
-    NoteService.addNote(note);
+//    NoteService.addNote(note);
+
+    try {
+      boolean flag = this.enote_obj.addNote(note);
+
+      if (flag == true) {
+        JOptionPane.showMessageDialog(this,"Create a new note successfully");
+      }
+      else {
+        JOptionPane.showMessageDialog(this,"Create a new note fail.","Alert",JOptionPane.WARNING_MESSAGE);
+      }
+
+    } catch (RemoteException ex) {
+      ex.printStackTrace();
+    }
 
   }
 

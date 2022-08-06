@@ -1,12 +1,14 @@
 package BE.Model;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Arrays;
 
-public class Note {
+public class Note implements Serializable {
   private String id, type, user_id;
-  private FileInputStream content;
+  private InputStream content;
   private Timestamp create_time;
 
   public String getId() {
@@ -25,11 +27,11 @@ public class Note {
     this.type = type;
   }
 
-  public FileInputStream getContent() {
+  public InputStream getContent() {
     return content;
   }
 
-  public void setContent(FileInputStream content) {
+  public void setContent(InputStream content) {
     this.content = content;
   }
 

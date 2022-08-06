@@ -32,7 +32,7 @@ public class ListNote extends JFrame implements Runnable {
   private CreateNote createNote;
   private DetailNote detailNote;
 
-  public ListNote(String username) {
+  public ListNote(ClientPanel client_panel, CommonBus common_bus, String username) {
     this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     this.setTitle("E-NOTE APPLICATION");
     this.setResizable(false);
@@ -42,7 +42,7 @@ public class ListNote extends JFrame implements Runnable {
     this.setVisible(true);
 
     this.common_bus = common_bus;
-//    this.enote_obj = this.common_bus.getRMIClient().getRemoteObject();
+    this.enote_obj = this.common_bus.getRMIClient().getRemoteObject();
     this.client_panel = client_panel;
     this.username = username;
 
@@ -69,7 +69,13 @@ public class ListNote extends JFrame implements Runnable {
     this.add(refreshBtn);
 
     // TODO: add table
-    ArrayList<Note> noteList = NoteService.getAllNote(this.username);
+//    ArrayList<Note> noteList = NoteService.getAllNote(this.username);
+    ArrayList<Note> noteList = null;
+    try {
+      noteList = this.enote_obj.getAllNote(this.username);
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
     noteList.forEach(note1 -> System.out.println(note1.toString()));
     String col[] = {"ID", "Type", "Created Time"};
     DefaultTableModel tableModel = new DefaultTableModel(col, 0);
@@ -121,9 +127,9 @@ public class ListNote extends JFrame implements Runnable {
 
 
 
-  public static void main(String[] args) {
-    new ListNote("username");
-  }
+//  public static void main(String[] args) {
+//    new ListNote("username");
+//  }
 
   private void initListNote() {
 //    try {

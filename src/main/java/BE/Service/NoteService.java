@@ -101,10 +101,8 @@ public class NoteService {
 
         res.setId(rs.getString("ID"));
         res.setType(rs.getString("Type"));
-//        FileInputStream file = new FileInputStream(String.valueOf(rs.getBinaryStream("Content")));
-//        rec.setContent(file);
+        res.setContent(rs.getBinaryStream("Content"));
         res.setUser_id(rs.getString("Username_ID"));
-        res.setContent(null);
         res.setCreate_time(rs.getTimestamp("Create_Time"));
       }
     } catch (Exception e) {

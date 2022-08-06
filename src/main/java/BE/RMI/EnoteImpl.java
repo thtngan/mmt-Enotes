@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
 public class EnoteImpl extends UnicastRemoteObject implements IEnote {
   protected EnoteImpl() throws RemoteException {
@@ -28,8 +29,8 @@ public class EnoteImpl extends UnicastRemoteObject implements IEnote {
   @Override
   public int logIn(String username, String pwd) throws RemoteException {
     Account account = AccountService.getByUsername(username);
-    System.out.println(account.toString());
-    if (account.getUsername() == null) {
+//    System.out.println(account.toString());
+    if (account == null) {
       return 1;
     } else {
       if (!BCrypt.checkpw(pwd, account.getPassword())) {
@@ -48,5 +49,10 @@ public class EnoteImpl extends UnicastRemoteObject implements IEnote {
   @Override
   public boolean addNote(Note note) throws RemoteException {
     return NoteService.addNote(note);
+  }
+
+  @Override
+  public ArrayList<Note> getAllNote(String username) throws RemoteException {
+    return NoteService.getAllNote(username);
   }
 }

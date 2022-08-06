@@ -6,6 +6,7 @@ import BE.Service.NoteService;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -45,6 +46,7 @@ public class DetailNote extends JDialog implements Runnable {
 
   private void initComponents() {
     Note note = NoteService.detailNote(this.username, this.id);
+    System.out.println(note.toString());
     // TODO: label
     JLabel label = new JLabel();
     label.setText("DETAIL A NOTE");
@@ -72,6 +74,7 @@ public class DetailNote extends JDialog implements Runnable {
     this.choice.add("Text");
     this.choice.add("Image");
     this.choice.add("File");
+    this.choice.select(note.getType());
     this.choice.setEnabled(false);
     this.add(this.choice);
 
@@ -80,7 +83,7 @@ public class DetailNote extends JDialog implements Runnable {
     content.setBounds(20, 150, 60, 30);
     this.add(content);
 
-    this.txtContent = new JTextArea("");
+    this.txtContent = new JTextArea(note.getContent().toString());
     this.txtContent.setLineWrap(true);
     this.jScrollPane = new JScrollPane(txtContent);
     this.jScrollPane.setBounds(80, 150, 300, 100);

@@ -103,7 +103,7 @@ public class SignUp extends JFrame implements Runnable {
     try {
       boolean signUpProcess = this.enote_obj.signUp(username, password);
       if (signUpProcess == true) {
-        JOptionPane.showMessageDialog(this,"Created a new account","Success",JOptionPane.YES_OPTION);
+        JOptionPane.showMessageDialog(this,"Created a new account","Success",JOptionPane.OK_OPTION);
         this.dispose();
       } else {
         JOptionPane.showMessageDialog(this,"Created account errored","Success",JOptionPane.OK_CANCEL_OPTION);
