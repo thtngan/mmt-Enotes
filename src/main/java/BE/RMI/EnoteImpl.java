@@ -1,7 +1,9 @@
 package BE.RMI;
 
 import BE.Model.Account;
+import BE.Model.Note;
 import BE.Service.AccountService;
+import BE.Service.NoteService;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.swing.*;
@@ -41,5 +43,10 @@ public class EnoteImpl extends UnicastRemoteObject implements IEnote {
   public boolean signUp(String username, String pwd) throws RemoteException {
     Account account = new Account(username, pwd);
     return AccountService.addOne(account);
+  }
+
+  @Override
+  public boolean addNote(Note note) throws RemoteException {
+    return NoteService.addNote(note);
   }
 }

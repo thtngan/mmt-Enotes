@@ -3,8 +3,6 @@ package FE.Dialog;
 import BE.Model.Note;
 import BE.RMI.IEnote;
 import BE.Service.NoteService;
-import BE.Shared.ConnectDB;
-import FE.Frame.ListNote;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -14,48 +12,42 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class CreateNote extends JDialog implements Runnable {
+public class DetailNote extends JDialog implements Runnable {
   public final static int WIDTH_DIALOG = 470;
-  public final static int HEIGHT_DIALOG = 320;
+  public final static int HEIGHT_DIALOG = 350;
 
   private IEnote enote_obj;
   private String username;
+  private String id;
 
   private JTextField txtName;
   private JTextArea txtContent;
   private JScrollPane jScrollPane;
   private Choice choice;
 
-  public CreateNote(JFrame owner, IEnote enote_obj, String username) {
+  public DetailNote(JFrame owner, IEnote enote_obj, String username, String id) {
     super(owner);
     this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-    this.setTitle("CREATE NEW NOTE");
+    this.setTitle("DETAIL NOTE");
     this.setResizable(true);
-    this.getContentPane().setPreferredSize(new Dimension(CreateNote.WIDTH_DIALOG, CreateNote.HEIGHT_DIALOG));
+    this.getContentPane().setPreferredSize(new Dimension(DetailNote.WIDTH_DIALOG, DetailNote.HEIGHT_DIALOG));
     this.setLayout(null);
     this.pack();
 
     this.enote_obj = enote_obj;
     this.username = username;
+    this.id = id;
     this.initComponents();
 
   }
 
   private void initComponents() {
-
+    Note note = NoteService.detailNote(this.username, this.id);
     // TODO: label
     JLabel label = new JLabel();
-    label.setText("CREATE A NEW NOTE");
+    label.setText("DETAIL A NOTE");
     label.setFont(new Font("segoe ui", Font.BOLD, 14));
     label.setBounds(150, 20, 500, 30);
     this.add(label);
@@ -67,6 +59,7 @@ public class CreateNote extends JDialog implements Runnable {
 
     this.txtName = new JTextField("");
     this.txtName.setBounds(80, 50, 370, 30);
+    this.txtName.setText(note.getId());
     this.add(this.txtName);
 
     // TODO: Type
@@ -79,6 +72,7 @@ public class CreateNote extends JDialog implements Runnable {
     this.choice.add("Text");
     this.choice.add("Image");
     this.choice.add("File");
+    this.choice.setEnabled(false);
     this.add(this.choice);
 
     // TODO: Content
@@ -98,7 +92,7 @@ public class CreateNote extends JDialog implements Runnable {
     btnBrowser.addMouseListener(new MouseAdapter() {
       @Override
       public void mousePressed(MouseEvent e) {
-          chooseFile(e);
+        chooseFile(e);
       }
     });
     this.add(btnBrowser);
@@ -113,6 +107,17 @@ public class CreateNote extends JDialog implements Runnable {
       }
     });
     this.add(btnSave);
+
+    // TODO: button DELETE
+    Button btnDel = new Button("DELETE");
+    btnDel.setBounds(20, 300, 430, 30);
+    btnDel.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mousePressed(MouseEvent e) {
+        save(e);
+      }
+    });
+    this.add(btnDel);
   }
 
   @Override

@@ -1,11 +1,12 @@
 package BE.Model;
 
+import java.io.FileInputStream;
 import java.sql.Timestamp;
 import java.util.Arrays;
 
 public class Note {
   private String id, type, user_id;
-  private String content;
+  private FileInputStream content;
   private Timestamp create_time;
 
   public String getId() {
@@ -24,11 +25,11 @@ public class Note {
     this.type = type;
   }
 
-  public String getContent() {
+  public FileInputStream getContent() {
     return content;
   }
 
-  public void setContent(String content) {
+  public void setContent(FileInputStream content) {
     this.content = content;
   }
 
@@ -54,7 +55,7 @@ public class Note {
         "id='" + id + '\'' +
         ", type='" + type + '\'' +
         ", user_id='" + user_id + '\'' +
-        ", content='" + content + '\'' +
+        ", content=" + content +
         ", create_time=" + create_time +
         '}';
   }

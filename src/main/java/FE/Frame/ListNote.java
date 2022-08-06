@@ -1,14 +1,24 @@
 package FE.Frame;
 
+import BE.Model.Note;
 import BE.RMI.IEnote;
+import BE.Service.NoteService;
 import BE.Shared.CommonBus;
+import FE.Dialog.CreateNote;
+import FE.Dialog.DetailNote;
 import FE.Panel.ClientPanel;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileInputStream;
 import java.rmi.RemoteException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Vector;
 
 public class ListNote extends JFrame implements Runnable {
   public final static int WIDTH_DIALOG = 480;
@@ -17,10 +27,12 @@ public class ListNote extends JFrame implements Runnable {
   private ClientPanel client_panel;
   private CommonBus common_bus;
   private IEnote enote_obj;
+  private String username;
 
-  private SignUp signUp;
+  private CreateNote createNote;
+  private DetailNote detailNote;
 
-  public ListNote() {
+  public ListNote(String username) {
     this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     this.setTitle("E-NOTE APPLICATION");
     this.setResizable(false);
@@ -32,6 +44,7 @@ public class ListNote extends JFrame implements Runnable {
     this.common_bus = common_bus;
 //    this.enote_obj = this.common_bus.getRMIClient().getRemoteObject();
     this.client_panel = client_panel;
+    this.username = username;
 
     //add components
     this.initComponents();
@@ -41,43 +54,63 @@ public class ListNote extends JFrame implements Runnable {
     JLabel label = new JLabel();
     label.setText("LIST NOTE");
     label.setFont(new Font("segoe ui", Font.BOLD, 30));
-    label.setBounds(135, 20, 510, 50);
+    label.setBounds(145, 20, 510, 50);
     this.add(label);
 
     // TODO: add refresh
     Button refreshBtn = new Button("Refresh");
     refreshBtn.setBounds(340, 80, 110, 25);
-//    refreshBtn.addMouseListener(new MouseAdapter() {
-//      @Override
-//      public void mousePressed(MouseEvent e) {
-//        initListProcess();
-//      }
-//    });
+    refreshBtn.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mousePressed(MouseEvent e) {
+        initListNote();
+      }
+    });
     this.add(refreshBtn);
 
     // TODO: add table
+    ArrayList<Note> noteList = NoteService.getAllNote(this.username);
+    noteList.forEach(note1 -> System.out.println(note1.toString()));
+    String col[] = {"ID", "Type", "Created Time"};
+    DefaultTableModel tableModel = new DefaultTableModel(col, 0);
 
+    noteList.forEach(note -> {
+      String ID = note.getId();
+      String type = note.getType();
+      Timestamp created_time = note.getCreate_time();
+
+      Object[] data = {ID, type, created_time};
+      tableModel.addRow(data);
+    });
+
+    JTable table = new JTable(tableModel);
+    table.setAutoCreateRowSorter(true);
+    table.getRowSorter().toggleSortOrder(1);
+    JScrollPane scrollPane = new JScrollPane(table);
+    scrollPane.setBounds(20, 110, 430, 300);
+    this.add(scrollPane);
 
     // TODO: add two button
     Button btnAdd = new Button("ADD");
-    btnAdd.setBounds(240, 120, 210,30);
-//    btnStart.addMouseListener(new MouseAdapter() {
-//      @Override
-//      public void mousePressed(MouseEvent e) {
-//        startSaveText();
-//      }
-//    });
+    btnAdd.setBounds(240, 420, 210,30);
+    btnAdd.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mousePressed(MouseEvent e) {
+        createNote();
+      }
+    });
     this.add(btnAdd);
 
-    Button btnDel = new Button("DELETE");
-    btnDel.setBounds(20, 120, 210,30);
-//    btnStop.addMouseListener(new MouseAdapter() {
-//      @Override
-//      public void mousePressed(MouseEvent e) {
-//        stopSaveText();
-//      }
-//    });
-    this.add(btnDel);
+    Button btnDet = new Button("DETAIL");
+    btnDet.setBounds(20, 420, 210,30);
+    btnDet.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mousePressed(MouseEvent e) {
+//        System.out.println(table.getValueAt(table.getSelectedRow(), 0));
+        detailNote(table.getValueAt(table.getSelectedRow(), 0).toString());
+      }
+    });
+    this.add(btnDet);
 
   }
 
@@ -89,6 +122,47 @@ public class ListNote extends JFrame implements Runnable {
 
 
   public static void main(String[] args) {
-    new ListNote();
+    new ListNote("username");
+  }
+
+  private void initListNote() {
+//    try {
+//      this.app = this.remote_obj.getAppList();
+//    } catch (RemoteException ex) {
+//      ex.printStackTrace();
+//    }
+
+    ArrayList<Note> noteList = NoteService.getAllNote(this.username);
+
+    String col[] = {"ID", "Type", "Created Time"};
+    DefaultTableModel tableModel = new DefaultTableModel(col, 0);
+
+    noteList.forEach(note -> {
+      String ID = note.getId();
+      String type = note.getType();
+      Timestamp created_time = note.getCreate_time();
+
+      Object[] data = {ID, type, created_time};
+      tableModel.addRow(data);
+    });
+
+    JTable table = new JTable(tableModel);
+    table.setAutoCreateRowSorter(true);
+    table.getRowSorter().toggleSortOrder(1);
+    JScrollPane scrollPane = new JScrollPane(table);
+    scrollPane.setBounds(20, 110, 430, 300);
+    this.add(scrollPane);
+  }
+
+  public void createNote() {
+    this.createNote = new CreateNote(this, this.enote_obj, this.username);
+    this.createNote.setVisible(true);
+  }
+
+
+  private void detailNote(String id) {
+    // TODO: open detail note to update/delete
+    this.detailNote = new DetailNote(this, this.enote_obj, this.username, id);
+    this.detailNote.setVisible(true);
   }
 }
