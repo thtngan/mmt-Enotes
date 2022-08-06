@@ -53,6 +53,7 @@ public class TCPServer {
 
     if(this.password.equals(password)) {
       result = "true";
+      
     }
     else result = "false";
     dos.writeUTF(result);

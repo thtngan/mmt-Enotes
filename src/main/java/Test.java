@@ -1,4 +1,5 @@
 import BE.Model.Account;
+import BE.Model.Note;
 import BE.Service.AccountService;
 import BE.Shared.ConnectDB;
 
@@ -10,11 +11,9 @@ import java.sql.SQLException;
 public class Test {
 
   public static void main(String[] args) {
-    Account account = new Account();
-    account.setUsername("user1");
-    account.setPassword("12345");
+    Note note = new Note();
 
-    AccountService.addOne(account);
+
 
   }
 }
