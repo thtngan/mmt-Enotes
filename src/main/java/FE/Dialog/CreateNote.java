@@ -3,6 +3,7 @@ package FE.Dialog;
 import BE.Model.Note;
 import BE.RMI.IEnote;
 import BE.Service.NoteService;
+import BE.Shared.ConnectCloud;
 import BE.Shared.ConnectDB;
 import FE.Frame.ListNote;
 
@@ -21,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,8 +38,8 @@ public class CreateNote extends JDialog implements Runnable {
   private JScrollPane jScrollPane;
   private Choice choice;
 
-  public CreateNote(JFrame owner, IEnote enote_obj, String username) {
-    super(owner);
+  public CreateNote(String username) {
+//    super(owner);
     this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     this.setTitle("CREATE NEW NOTE");
     this.setResizable(true);
@@ -45,7 +47,7 @@ public class CreateNote extends JDialog implements Runnable {
     this.setLayout(null);
     this.pack();
 
-    this.enote_obj = enote_obj;
+//    this.enote_obj = enote_obj;
     this.username = username;
     this.initComponents();
 
@@ -125,32 +127,37 @@ public class CreateNote extends JDialog implements Runnable {
     note.setId(this.txtName.getText());
     note.setType(this.choice.getSelectedItem().toString());
     note.setCreate_time(new Timestamp(System.currentTimeMillis()));
-//    note.setContent(this.txtContent.getText());
-    try {
-      FileInputStream fin = new FileInputStream(this.txtContent.getText());
-      note.setContent(fin);
-    } catch (FileNotFoundException ex) {
-      ex.printStackTrace();
+
+    if (this.choice.getSelectedIndex() != 0) {
+      File file = new File(this.txtContent.getText());
+      ConnectCloud connectCloud = new ConnectCloud();
+      Map result = connectCloud.uploadFile(file);
+      result.forEach((key, value) -> System.out.println(key + ":" + value));
+      System.out.println(result.get("url").toString());
+      note.setContent(result.get("url").toString());
+    } else {
+      note.setContent(this.txtContent.getText());
+      System.out.println("Txt");
     }
+
     note.setUser_id(this.username);
 
-    System.out.println(note.toString());
 
 //    NoteService.addNote(note);
 
-    try {
-      boolean flag = this.enote_obj.addNote(note);
-
-      if (flag == true) {
-        JOptionPane.showMessageDialog(this,"Create a new note successfully");
-      }
-      else {
-        JOptionPane.showMessageDialog(this,"Create a new note fail.","Alert",JOptionPane.WARNING_MESSAGE);
-      }
-
-    } catch (RemoteException ex) {
-      ex.printStackTrace();
-    }
+//    try {
+//      boolean flag = this.enote_obj.addNote(note);
+//
+//      if (flag == true) {
+//        JOptionPane.showMessageDialog(this,"Create a new note successfully");
+//      }
+//      else {
+//        JOptionPane.showMessageDialog(this,"Create a new note fail.","Alert",JOptionPane.WARNING_MESSAGE);
+//      }
+//
+//    } catch (RemoteException ex) {
+//      ex.printStackTrace();
+//    }
 
   }
 
@@ -161,11 +168,19 @@ public class CreateNote extends JDialog implements Runnable {
       fileChooser.showDialog(this, "Send");
 
       File dir = fileChooser.getSelectedFile();
+
+      //If browse a file
+      this.txtName.setText(dir.getName());
       this.txtContent.setText(dir.getAbsolutePath());
       this.txtContent.setEditable(false);
+
     } else {
       JOptionPane.showMessageDialog(this,"Only send text","Error",JOptionPane.WARNING_MESSAGE);
     }
   }
 
+  public static void main(String[] args) {
+    CreateNote note = new CreateNote("user");
+    note.setVisible(true);
+  }
 }

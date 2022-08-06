@@ -26,7 +26,7 @@ public class NoteService {
       ps = connection.prepareStatement(query);
       ps.setString(1, note.getId());
       ps.setString(2, note.getType());
-      ps.setBinaryStream(3, note.getContent());
+      ps.setString(3, note.getContent());
       ps.setString(4, note.getUser_id());
       ps.setTimestamp(5, note.getCreate_time());
       ps.execute();
@@ -101,7 +101,7 @@ public class NoteService {
 
         res.setId(rs.getString("ID"));
         res.setType(rs.getString("Type"));
-        res.setContent(rs.getBinaryStream("Content"));
+        res.setContent(rs.getString("Content"));
         res.setUser_id(rs.getString("Username_ID"));
         res.setCreate_time(rs.getTimestamp("Create_Time"));
       }

@@ -161,8 +161,8 @@ public class ListNote extends JFrame implements Runnable {
   }
 
   public void createNote() {
-    this.createNote = new CreateNote(this, this.enote_obj, this.username);
-    this.createNote.setVisible(true);
+//    this.createNote = new CreateNote(this, this.enote_obj, this.username);
+//    this.createNote.setVisible(true);
   }
 
 

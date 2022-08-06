@@ -7,8 +7,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 
 public class Note implements Serializable {
-  private String id, type, user_id;
-  private InputStream content;
+  private String id, type, user_id, content;
   private Timestamp create_time;
 
   public String getId() {
@@ -27,11 +26,11 @@ public class Note implements Serializable {
     this.type = type;
   }
 
-  public InputStream getContent() {
+  public String getContent() {
     return content;
   }
 
-  public void setContent(InputStream content) {
+  public void setContent(String content) {
     this.content = content;
   }
 

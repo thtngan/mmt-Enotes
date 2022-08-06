@@ -133,18 +133,7 @@ public class DetailNote extends JDialog implements Runnable {
     note.setId(this.txtName.getText());
     note.setType(this.choice.getSelectedItem().toString());
     note.setCreate_time(new Timestamp(System.currentTimeMillis()));
-//    note.setContent(this.txtContent.getText());
-    try {
-      FileInputStream fin = new FileInputStream(this.txtContent.getText());
-      note.setContent(fin);
-    } catch (FileNotFoundException ex) {
-      ex.printStackTrace();
-    }
-    note.setUser_id(this.username);
 
-    System.out.println(note.toString());
-
-    NoteService.addNote(note);
 
   }
 
