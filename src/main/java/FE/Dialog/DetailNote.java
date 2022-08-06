@@ -3,6 +3,8 @@ package FE.Dialog;
 import BE.Model.Note;
 import BE.RMI.IEnote;
 import BE.Service.NoteService;
+import BE.Shared.CommonBus;
+import FE.Panel.ClientPanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -22,7 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class DetailNote extends JDialog implements Runnable {
   public final static int WIDTH_DIALOG = 470;
@@ -38,8 +42,8 @@ public class DetailNote extends JDialog implements Runnable {
   private JScrollPane jScrollPane;
   private Choice choice;
 
-  public DetailNote(String username, String id) {
-//    super(owner);
+  public DetailNote(JFrame owner, IEnote enote_obj, String username, String id) {
+    super(owner);
     this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     this.setTitle("DETAIL NOTE");
     this.setResizable(true);
@@ -57,7 +61,13 @@ public class DetailNote extends JDialog implements Runnable {
   }
 
   private void initComponents() {
-    this.note = NoteService.detailNote(this.username, this.id);
+//    this.note = NoteService.detailNote(this.username, this.id);
+    try {
+      this.note = this.enote_obj.getNote(this.username, this.id);
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
+
     System.out.println(this.note.toString());
     // TODO: label
     JLabel label = new JLabel();
@@ -99,7 +109,7 @@ public class DetailNote extends JDialog implements Runnable {
 
 
     // TODO: show image
-    if (this.note.getContent().equals("Image")) {
+    if (this.note.getType().equals("Image")) {
       try {
         URL url = new URL(this.note.getContent());
         Image image = ImageIO.read(url);
@@ -194,9 +204,9 @@ public class DetailNote extends JDialog implements Runnable {
     return true;
   }
 
-  public static void main(String[] args) {
-    DetailNote note = new DetailNote("username", "123");
-    note.setVisible(true);
-  }
+//  public static void main(String[] args) {
+//    DetailNote note = new DetailNote("username", "123");
+//    note.setVisible(true);
+//  }
 
 }

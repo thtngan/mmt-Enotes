@@ -13,4 +13,5 @@ public interface IEnote extends Remote {
   // TODO: function of note
   boolean addNote(Note note) throws RemoteException;
   ArrayList<Note> getAllNote(String username) throws RemoteException;
+  Note getNote(String username, String id) throws RemoteException;
 }

@@ -4,27 +4,16 @@ import BE.Model.Note;
 import BE.RMI.IEnote;
 import BE.Service.NoteService;
 import BE.Shared.ConnectCloud;
-import BE.Shared.ConnectDB;
-import FE.Frame.ListNote;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class CreateNote extends JDialog implements Runnable {
   public final static int WIDTH_DIALOG = 470;
@@ -38,8 +27,8 @@ public class CreateNote extends JDialog implements Runnable {
   private JScrollPane jScrollPane;
   private Choice choice;
 
-  public CreateNote(String username) {
-//    super(owner);
+  public CreateNote(JFrame owner, IEnote enote_obj, String username) {
+    super(owner);
     this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     this.setTitle("CREATE NEW NOTE");
     this.setResizable(true);
@@ -47,7 +36,7 @@ public class CreateNote extends JDialog implements Runnable {
     this.setLayout(null);
     this.pack();
 
-//    this.enote_obj = enote_obj;
+    this.enote_obj = enote_obj;
     this.username = username;
     this.initComponents();
 
@@ -131,10 +120,15 @@ public class CreateNote extends JDialog implements Runnable {
     if (this.choice.getSelectedIndex() != 0) {
       File file = new File(this.txtContent.getText());
       ConnectCloud connectCloud = new ConnectCloud();
-      Map result = connectCloud.uploadFile(file);
-      result.forEach((key, value) -> System.out.println(key + ":" + value));
-      System.out.println(result.get("url").toString());
-      note.setContent(result.get("url").toString());
+      if (file.length() <  10485700) {
+        Map result = connectCloud.uploadFile(file);
+        result.forEach((key, value) -> System.out.println(key + ":" + value));
+        System.out.println(result.get("url").toString());
+        note.setContent(result.get("url").toString());
+      } else {
+        JOptionPane.showMessageDialog(this,"Cannot create a new file because file size is too large");
+      }
+
     } else {
       note.setContent(this.txtContent.getText());
       System.out.println("Txt");
@@ -143,21 +137,21 @@ public class CreateNote extends JDialog implements Runnable {
     note.setUser_id(this.username);
 
 
-    NoteService.addNote(note);
+//    NoteService.addNote(note);
 
-//    try {
-//      boolean flag = this.enote_obj.addNote(note);
-//
-//      if (flag == true) {
-//        JOptionPane.showMessageDialog(this,"Create a new note successfully");
-//      }
-//      else {
-//        JOptionPane.showMessageDialog(this,"Create a new note fail.","Alert",JOptionPane.WARNING_MESSAGE);
-//      }
-//
-//    } catch (RemoteException ex) {
-//      ex.printStackTrace();
-//    }
+    try {
+      boolean flag = this.enote_obj.addNote(note);
+
+      if (flag == true) {
+        JOptionPane.showMessageDialog(this,"Create a new note successfully");
+      }
+      else {
+        JOptionPane.showMessageDialog(this,"Create a new note fail.","Alert",JOptionPane.WARNING_MESSAGE);
+      }
+
+    } catch (RemoteException ex) {
+      ex.printStackTrace();
+    }
 
   }
 
@@ -179,8 +173,8 @@ public class CreateNote extends JDialog implements Runnable {
     }
   }
 
-  public static void main(String[] args) {
-    CreateNote note = new CreateNote("username");
-    note.setVisible(true);
-  }
+//  public static void main(String[] args) {
+//    CreateNote note = new CreateNote("username");
+//    note.setVisible(true);
+//  }
 }

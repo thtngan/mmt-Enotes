@@ -55,4 +55,9 @@ public class EnoteImpl extends UnicastRemoteObject implements IEnote {
   public ArrayList<Note> getAllNote(String username) throws RemoteException {
     return NoteService.getAllNote(username);
   }
+
+  @Override
+  public Note getNote(String username, String id) throws RemoteException {
+    return NoteService.detailNote(username, id);
+  }
 }

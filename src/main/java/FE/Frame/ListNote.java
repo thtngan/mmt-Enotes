@@ -32,6 +32,8 @@ public class ListNote extends JFrame implements Runnable {
   private CreateNote createNote;
   private DetailNote detailNote;
 
+  private JScrollPane scroll;
+
   public ListNote(ClientPanel client_panel, CommonBus common_bus, String username) {
     this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     this.setTitle("E-NOTE APPLICATION");
@@ -92,9 +94,9 @@ public class ListNote extends JFrame implements Runnable {
     JTable table = new JTable(tableModel);
     table.setAutoCreateRowSorter(true);
     table.getRowSorter().toggleSortOrder(1);
-    JScrollPane scrollPane = new JScrollPane(table);
-    scrollPane.setBounds(20, 110, 430, 300);
-    this.add(scrollPane);
+    this.scroll = new JScrollPane(table);
+    this.scroll.setBounds(20, 110, 430, 300);
+    this.add(this.scroll);
 
     // TODO: add two button
     Button btnAdd = new Button("ADD");
@@ -132,14 +134,16 @@ public class ListNote extends JFrame implements Runnable {
 //  }
 
   private void initListNote() {
-//    try {
-//      this.app = this.remote_obj.getAppList();
-//    } catch (RemoteException ex) {
-//      ex.printStackTrace();
-//    }
+    ArrayList<Note> noteList = null;
+    try {
+      noteList = this.enote_obj.getAllNote(this.username);
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
 
-    ArrayList<Note> noteList = NoteService.getAllNote(this.username);
+//    ArrayList<Note> noteList = NoteService.getAllNote(this.username);
 
+    this.remove(this.scroll);
     String col[] = {"ID", "Type", "Created Time"};
     DefaultTableModel tableModel = new DefaultTableModel(col, 0);
 
@@ -155,20 +159,20 @@ public class ListNote extends JFrame implements Runnable {
     JTable table = new JTable(tableModel);
     table.setAutoCreateRowSorter(true);
     table.getRowSorter().toggleSortOrder(1);
-    JScrollPane scrollPane = new JScrollPane(table);
-    scrollPane.setBounds(20, 110, 430, 300);
-    this.add(scrollPane);
+    this.scroll = new JScrollPane(table);
+    this.scroll.setBounds(20, 110, 430, 300);
+    this.add(this.scroll);
   }
 
   public void createNote() {
-//    this.createNote = new CreateNote(this, this.enote_obj, this.username);
-//    this.createNote.setVisible(true);
+    this.createNote = new CreateNote(this, this.enote_obj, this.username);
+    this.createNote.setVisible(true);
   }
 
 
   private void detailNote(String id) {
     // TODO: open detail note to view
-//    this.detailNote = new DetailNote(this, this.enote_obj, this.username, id);
-//    this.detailNote.setVisible(true);
+    this.detailNote = new DetailNote(this, this.enote_obj, this.username, id);
+    this.detailNote.setVisible(true);
   }
 }
