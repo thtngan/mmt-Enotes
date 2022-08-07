@@ -12,6 +12,7 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class EnoteImpl extends UnicastRemoteObject implements IEnote {
   protected EnoteImpl() throws RemoteException {
@@ -41,9 +42,33 @@ public class EnoteImpl extends UnicastRemoteObject implements IEnote {
   }
 
   @Override
-  public boolean signUp(String username, String pwd) throws RemoteException {
-    Account account = new Account(username, pwd);
-    return AccountService.addOne(account);
+  public String signUp(String username, String pwd) throws RemoteException {
+    String message = checkValid(username, pwd);
+
+    if (message.equals("Success")) {
+      Account account = new Account(username, pwd);
+      if (AccountService.addOne(account)) {
+        return "Success";
+      } else {
+        return "Create new user is failed.";
+      }
+    }
+
+    return message;
+  }
+
+  private String checkValid(String username, String pwd) {
+    // TODO: check 3 letter
+    if (pwd.length() < 3){
+      return "Password need at least 3 character";
+    }
+    // TODO: check 5 letter, a-z, 0-9
+    String PATTERN ="^[a-z0-9]{4,50}$";
+    Pattern p = Pattern.compile(PATTERN);
+    if (!p.matcher(username).matches()) {
+      return "Username need at least 5 character: a-z, 0-9";
+    }
+    return "Success";
   }
 
   @Override
