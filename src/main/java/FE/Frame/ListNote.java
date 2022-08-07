@@ -33,6 +33,7 @@ public class ListNote extends JFrame implements Runnable {
   private DetailNote detailNote;
 
   private JScrollPane scroll;
+  private JTable table;
 
   public ListNote(ClientPanel client_panel, CommonBus common_bus, String username) {
     this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -91,10 +92,11 @@ public class ListNote extends JFrame implements Runnable {
       tableModel.addRow(data);
     });
 
-    JTable table = new JTable(tableModel);
-    table.setAutoCreateRowSorter(true);
-    table.getRowSorter().toggleSortOrder(1);
-    this.scroll = new JScrollPane(table);
+    this.table = new JTable(tableModel);
+    this.table.setAutoCreateRowSorter(true);
+    this.table.getRowSorter().toggleSortOrder(2);
+
+    this.scroll = new JScrollPane(this.table);
     this.scroll.setBounds(20, 110, 430, 300);
     this.add(this.scroll);
 
@@ -143,7 +145,7 @@ public class ListNote extends JFrame implements Runnable {
 
 //    ArrayList<Note> noteList = NoteService.getAllNote(this.username);
 
-    this.remove(this.scroll);
+
     String col[] = {"ID", "Type", "Created Time"};
     DefaultTableModel tableModel = new DefaultTableModel(col, 0);
 
@@ -154,14 +156,19 @@ public class ListNote extends JFrame implements Runnable {
 
       Object[] data = {ID, type, created_time};
       tableModel.addRow(data);
+      tableModel.fireTableDataChanged();
     });
 
-    JTable table = new JTable(tableModel);
-    table.setAutoCreateRowSorter(true);
-    table.getRowSorter().toggleSortOrder(1);
-    this.scroll = new JScrollPane(table);
+    this.remove(this.scroll);
+
+    this.table = new JTable(tableModel);
+    this.table.setAutoCreateRowSorter(true);
+    this.table.getRowSorter().toggleSortOrder(2);
+    this.scroll = new JScrollPane(this.table);
     this.scroll.setBounds(20, 110, 430, 300);
     this.add(this.scroll);
+    this.repaint();
+    this.revalidate();
   }
 
   public void createNote() {

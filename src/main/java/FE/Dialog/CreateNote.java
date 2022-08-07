@@ -144,6 +144,7 @@ public class CreateNote extends JDialog implements Runnable {
 
       if (flag == true) {
         JOptionPane.showMessageDialog(this,"Create a new note successfully");
+        this.dispose();
       }
       else {
         JOptionPane.showMessageDialog(this,"Create a new note fail.","Alert",JOptionPane.WARNING_MESSAGE);
