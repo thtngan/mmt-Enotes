@@ -9,6 +9,7 @@ GO
 /*
 DROP TABLE NOTE
 DROP TABLE ACCOUNT
+$2a$13$Efytw0A9HP/4lnLSmDSFaOKC0VEU1yh3CfjJHEi64rsBK8H.VC7sK
 */
 
 CREATE TABLE ACCOUNT (
@@ -20,12 +21,16 @@ CREATE TABLE ACCOUNT (
 ON [PRIMARY]
 GO
 
+INSERT INTO ACCOUNT values('username','$2a$13$Efytw0A9HP/4lnLSmDSFaOKC0VEU1yh3CfjJHEi64rsBK8H.VC7sK')
+
+GO
+
 CREATE TABLE NOTE (
                       ID VARCHAR(50),
                       Type VARCHAR(50),
-                      Content VARCHAR(50),
+                      Content NVARCHAR(100),
                       Username_ID VARCHAR(100),
-					  Create_Time TIMESTAMP,
+					  Create_Time DATETIME,
                       CONSTRAINT PK_ID PRIMARY KEY CLUSTERED (ID)
 )
 
@@ -33,11 +38,8 @@ ALTER TABLE NOTE WITH NOCHECK
 	ADD FOREIGN KEY (Username_ID) REFERENCES ACCOUNT(Username)
 GO
 
-INSERT INTO ACCOUNT values('username','1234')
-INSERT INTO NOTE VALUES(1, 'hello', 'txt', '0x9473FBCCBC01AF', 'username')
+
 
 SELECT * FROM ACCOUNT
 SELECT * FROM NOTE
 
-DELETE FROM NOTE WHERE USERNAME_ID = 'username'
-DELETE FROM ACCOUNT WHERE USERNAME = 'username'
